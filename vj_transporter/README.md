@@ -8,5 +8,5 @@ yarn run build
 
 ## Architecture
 
-DJソフト -> audio_transpoterがキャッチ。Agoraのサーバに送信
+audio_transporter -> vj_transpoterがキャッチ。Agoraのサーバに送信
 オーディオデバイスは選べる。

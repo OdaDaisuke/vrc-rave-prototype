@@ -1,2 +1,3 @@
 ./audio_transporter/public/app.js
+./vj_transporter/public/app.js
 node_modules
