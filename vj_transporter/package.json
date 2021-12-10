@@ -8,7 +8,8 @@
     "serve": "NODE_ENV=development webpack serve"
   },
   "dependencies": {
-    "agora-rtc-sdk": "^3.6.7"
+    "agora-rtc-sdk": "^3.6.7",
+    "audio_transporter": "1.0.0"
   },
   "devDependencies": {
     "webpack": "^5.65.0",

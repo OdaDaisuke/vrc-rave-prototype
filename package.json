@@ -1,0 +1,16 @@
+{
+  "private": "true",
+  "name": "schutzstaffel-prototype",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "serve": "yarn workspaces run serve"
+  },
+  "workspaces": [
+    "audio_transporter",
+    "vj_transporter"
+  ],
+  "repository": "git@github.com:OdaDaisuke/schutzstaffel-prototype.git",
+  "author": "oda-daisuke <daisukeoda3141@gmail.com>",
+  "license": "MIT"
+}
