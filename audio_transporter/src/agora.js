@@ -42,10 +42,9 @@ export class Agora {
     localTracks.videoTrack = await AgoraRTC.createCameraVideoTrack();
     await this.client.setClientRole("host");
     const token = await this.fetchToken(this.channelName);
-    console.log('here', token)
     const uid = await this.client.join(token, this.channelName, null);
-    console.log('joined', uid);
     this.client.publish(Object.values(localTracks));
+    return uid;
   }
 
   async fetchToken(channelName) {
