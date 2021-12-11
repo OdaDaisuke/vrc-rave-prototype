@@ -1,15 +1,21 @@
 import AgoraRTC from "agora-rtc-sdk-ng"
+import { appConfig } from './config'
 
 export class Agora {
   constructor() {
+    this.channelName = ''
+    this.appId = appConfig.APP_ID;
+    this.appCertificate = appConfig.APP_CERTIFICATE;
+    this.tokenApiUrl = `${appConfig.API_BASE_URL}/access_token`;
     this.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
     this.client.on("user-published", this.handleUserPublished);
-    this.appId = ''
-    this.channel = ''
-    this.token = ''
   }
 
   handleUserPublished() {
+  }
+
+  setChannelName(channelName) {
+    this.channelName = channelName;
   }
 
   /**
@@ -17,19 +23,38 @@ export class Agora {
    * @param {Object} audioTrack 
    */
   setAudio(audioTrack) {
-    this.audioTrack = audioTrack
+    this.audioTrack = audioTrack;
   }
 
   /**
    * Remoteに音声送信
    */
-  sendAudio() {
+  async sendAudio() {
+    if (!this.audioTrack) {
+      throw new Error('No audio track detected.')
+    }
     const localTracks = {
       videoTrack: null,
-      audioTrack: this.audioTrack,
+      audioTrack: AgoraRTC.createCustomAudioTrack({
+        mediaStreamTrack: this.audioTrack,
+      }),
     };
-    this.client.join(this.appId, this.channel, this.token);
+    localTracks.videoTrack = await AgoraRTC.createCameraVideoTrack();
+    await this.client.setClientRole("host");
+    const token = await this.fetchToken(this.channelName);
+    console.log('here', token)
+    const uid = await this.client.join(token, this.channelName, null);
+    console.log('joined', uid);
     this.client.publish(Object.values(localTracks));
+  }
+
+  async fetchToken(channelName) {
+    const endpoint = `${this.tokenApiUrl}?channelName=${channelName}`
+    const res = await fetch(endpoint, {
+      method: 'GET',
+    });
+    const rawData = await res.json();
+    return rawData.token;
   }
 
   leave() {

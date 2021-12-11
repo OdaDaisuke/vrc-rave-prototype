@@ -1,18 +1,21 @@
+import AgoraRTC from 'agora-rtc-sdk-ng'
 import { Audio } from './audio'
 import { Agora } from './agora'
 
 class App {
   constructor () {
-    console.log('run')
+    console.log('run');
   }
 
   async run() {
-    const audio = new Audio()
-    await audio.fetchDevice()
-    // デバイスを選択
-    // デバイスの音声取得
-    // Agoraに送る
-    // 切断
+    const audio = new Audio();
+    const agora = new Agora();
+    const audioStream = await audio.fetchStream();
+    const audioTracks = audioStream.getAudioTracks()
+    // TODO: 任意のチャンネル
+    agora.setChannelName('test')
+    agora.setAudio(audioTracks[0])
+    agora.sendAudio()    
   }
 }
 

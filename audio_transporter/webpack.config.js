@@ -29,7 +29,7 @@ module.exports = {
     ]
   },
   plugins: [
-    new Dotenv({ systemvars: true })
+    new Dotenv()
   ],
   resolve: {
     extensions: ['.js', '.jsx']

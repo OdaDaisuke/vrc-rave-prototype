@@ -2,11 +2,10 @@ export class Audio {
   constructor() {
   }
 
-  async fetchDevice() {
+  async fetchStream() {
     this.audioContext = new AudioContext();
-    const stream = await navigator.mediaDevices.getUserMedia({
+    return await navigator.mediaDevices.getUserMedia({
       audio: true
     });
-    const input = this.audioContext.createMediaStreamSource(stream);
   }
 }

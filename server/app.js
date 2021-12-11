@@ -1,7 +1,7 @@
 require('dotenv').config();
 const express = require('express');
 const {RtcTokenBuilder, RtcRole} = require('agora-access-token');
-const PORT = 8080;
+const PORT = 8081;
 const APP_ID = process.env.APP_ID;
 const APP_CERTIFICATE = process.env.APP_CERTIFICATE;
 
