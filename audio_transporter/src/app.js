@@ -3,9 +3,12 @@ import { Agora } from './agora'
 
 class App {
   constructor () {
+    console.log('run')
   }
 
-  run() {
+  async run() {
+    const audio = new Audio()
+    await audio.fetchDevice()
     // デバイスを選択
     // デバイスの音声取得
     // Agoraに送る

@@ -1,5 +1,3 @@
-import { Agora } from './agora'
-
 export class Audio {
   constructor() {
   }
@@ -10,6 +8,5 @@ export class Audio {
       audio: true
     });
     const input = this.audioContext.createMediaStreamSource(stream);
-    
   }
 }
