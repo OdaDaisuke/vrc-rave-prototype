@@ -8,6 +8,7 @@ class App {
       $createRoomBtn: document.querySelector('#create-room'),
       $status: document.querySelector('#status'),
       $audioDevice: document.querySelector('#audio-device'),
+      $channelUid: document.querySelector('#uid'),
     };
     this.audio = new Audio();
     this.agora = new Agora();
@@ -41,6 +42,7 @@ class App {
       this.dom.$status.classList.remove('status--failure')
       this.dom.$status.classList.add('status--success')
       this.dom.$status.innerText = '接続成功';
+      this.dom.$channelUid.innerText = `UID: ${uid}`;
     } catch (e) {
       console.error(e);
       this.dom.$status.classList.add('status--failure')
