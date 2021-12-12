@@ -20,13 +20,13 @@ class App {
       audio: true,
       video: true,
     });
-    const audioTrack = displayMediaList.getAudioTracks();
-    if (audioTrack.length <= 0) {
+    const audioTracks = displayMediaList.getAudioTracks();
+    if (audioTracks.length <= 0) {
       alert('オーディオが検出できませんでした。');
       return;
     }
-    this.dom.$audioDevice.innerText = `接続デバイス：${audioTrack[0].label}`;
-    this.agora.setAudio(audioTrack);
+    this.dom.$audioDevice.innerText = `接続デバイス：${audioTracks[0].label}`;
+    this.agora.setAudio(audioTracks[0]);
   }
 
   async onSubmit() {
