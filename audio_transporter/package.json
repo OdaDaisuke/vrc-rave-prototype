@@ -9,10 +9,7 @@
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",
-    "agora-access-token": "^2.0.4",
-    "agora-rtc-sdk": "^3.6.7",
-    "agora-rtc-sdk-ng": "^4.7.3",
-    "os-browserify": "^0.3.0"
+    "agora-rtc-sdk-ng": "^4.7.3"
   },
   "devDependencies": {
     "@babel/core": "^7.16.0",
