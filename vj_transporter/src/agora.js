@@ -16,7 +16,13 @@ export class Agora {
 
   async handleUserPublished(user, mediaType) {
     await this.client.subscribe(user, mediaType);
-    this.props.handleUserPublished(user, mediaType);
+    const event = new CustomEvent("received-user-stream", {
+      detail: {
+        user,
+        mediaType,
+      },
+    });
+    document.dispatchEvent(event);
   }
 
   /**

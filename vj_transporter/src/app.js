@@ -1,8 +1,5 @@
 import { Agora } from './agora'
 
-const $receivedAudioTrack = document.querySelector('#received-audio');
-let audioTrack = null;
-
 class App {
   constructor () {
     this.dom = {
@@ -11,12 +8,16 @@ class App {
       $status: document.querySelector('#status'),
       $videoDevice: document.querySelector('#video-device'),
       $publishButton: document.querySelector('#publish-stream'),
+      $receivedAudioTrack: document.querySelector('#received-audio'),
     }
     this.agora = new Agora(this.handleUserPublished);
     this.publish = this.publish.bind(this);
+    this.handleUserPublished = this.handleUserPublished.bind(this);
     this.joinRoom = this.joinRoom.bind(this);
+    this.audioTrack = null;
     this.dom.$joinRoomBtn.addEventListener('click', this.joinRoom)
     this.dom.$publishButton.addEventListener('click', this.publish);
+    document.addEventListener('received-user-stream', this.handleUserPublished);
   }
 
   async run() {
@@ -33,17 +34,19 @@ class App {
     this.agora.setVideo(videoTracks[0]);
   }
 
-  // TODO: propertyでモツように
-  async handleUserPublished(user, mediaType) {
-    if (mediaType === "audio") {
-      const remoteAudioTrack = user.audioTrack;
-      audioTrack = remoteAudioTrack.getMediaStreamTrack();
-      $receivedAudioTrack.innerText = `受け取った音声: ${audioTrack.label}`;
+  async handleUserPublished(e) {
+    if (!this.dom) {
+      return;
+    }
+    if (e.detail.mediaType === "audio") {
+      const remoteAudioTrack = e.detail.user.audioTrack;
+      this.audioTrack = remoteAudioTrack.getMediaStreamTrack();
+      this.dom.$receivedAudioTrack.innerText = `受け取った音声: ${this.audioTrack.label}`;
     }
   }
 
   async publish() {
-    this.agora.setAudio(audioTrack);
+    this.agora.setAudio(this.audioTrack);
     this.agora.publishMixedMedia();
   }
 
