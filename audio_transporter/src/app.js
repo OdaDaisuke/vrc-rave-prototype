@@ -10,7 +10,6 @@ class App {
       $audioDevice: document.querySelector('#audio-device'),
       $channelUid: document.querySelector('#uid'),
     };
-    this.audio = new Audio();
     this.agora = new Agora();
     this.onSubmit = this.onSubmit.bind(this);
     this.dom.$createRoomBtn.addEventListener('click', this.onSubmit)

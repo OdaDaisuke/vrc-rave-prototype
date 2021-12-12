@@ -2,25 +2,39 @@ import AgoraRTC from "agora-rtc-sdk-ng"
 import { appConfig } from './config'
 
 export class Agora {
-  constructor() {
+  constructor(handleUserPublished) {
     this.appId = appConfig.APP_ID;
     this.appCertificate = appConfig.APP_CERTIFICATE;
     this.tokenApiUrl = `${appConfig.API_BASE_URL}/access_token`;
     this.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
     this.handleUserPublished = this.handleUserPublished.bind(this);
+    this.props = {
+      handleUserPublished,
+    }
     this.client.on("user-published", this.handleUserPublished);
   }
 
   async handleUserPublished(user, mediaType) {
     await this.client.subscribe(user, mediaType);
-    if (mediaType === "audio") {
-      const remoteAudioTrack = user.audioTrack;
-      const mediaStreamTrack = remoteAudioTrack.getMediaStreamTrack();
-      console.log('audio track', mediaStreamTrack);
-      // remoteAudioTrack.play();
-    }
+    this.props.handleUserPublished(user, mediaType);
   }
 
+  /**
+   * 映像トラックを設定
+   * @param {Object} videoTrack 
+   */
+   setVideo(videoTrack) {
+    this.videoTrack = videoTrack;
+  }
+
+  /**
+   * 音声トラックを設定
+   * @param {Object} audioTrack 
+   */
+  setAudio(audioTrack) {
+    this.audioTrack = audioTrack;
+  }
+  
   /**
    * チャンネルに讃歌
    */
@@ -29,6 +43,18 @@ export class Agora {
     const token = await this.fetchToken(channelName);
     const uid = await this.client.join(token, channelName, null);
     return uid;
+  }
+  
+  async publishMixedMedia() {
+    const localTracks = {
+      videoTrack: AgoraRTC.createCustomVideoTrack({
+        mediaStreamTrack: this.videoTrack,
+      }),
+      audioTrack: AgoraRTC.createCustomAudioTrack({
+        mediaStreamTrack: this.audioTrack,
+      }),
+    };
+    this.client.publish(Object.values(localTracks));
   }
 
   async fetchToken(channelName) {

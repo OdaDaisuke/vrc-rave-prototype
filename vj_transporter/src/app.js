@@ -1,19 +1,50 @@
 import { Agora } from './agora'
 
+const $receivedAudioTrack = document.querySelector('#received-audio');
+let audioTrack = null;
+
 class App {
   constructor () {
     this.dom = {
       $channelName: document.querySelector('#channel-name'),
       $joinRoomBtn: document.querySelector('#join-room'),
       $status: document.querySelector('#status'),
-    };
-    this.audio = new Audio();
-    this.agora = new Agora();
+      $videoDevice: document.querySelector('#video-device'),
+      $publishButton: document.querySelector('#publish-stream'),
+    }
+    this.agora = new Agora(this.handleUserPublished);
+    this.publish = this.publish.bind(this);
     this.joinRoom = this.joinRoom.bind(this);
     this.dom.$joinRoomBtn.addEventListener('click', this.joinRoom)
+    this.dom.$publishButton.addEventListener('click', this.publish);
   }
 
   async run() {
+    const displayMediaList = await navigator.mediaDevices.getDisplayMedia({
+      audio: false,
+      video: true,
+    });
+    const videoTracks = displayMediaList.getVideoTracks();
+    if (videoTracks.length <= 0) {
+      alert('動画が検出できませんでした。');
+      return;
+    }
+    this.dom.$videoDevice.innerText = `接続デバイス：${videoTracks[0].label}`;
+    this.agora.setVideo(videoTracks[0]);
+  }
+
+  // TODO: propertyでモツように
+  async handleUserPublished(user, mediaType) {
+    if (mediaType === "audio") {
+      const remoteAudioTrack = user.audioTrack;
+      audioTrack = remoteAudioTrack.getMediaStreamTrack();
+      $receivedAudioTrack.innerText = `受け取った音声: ${audioTrack.label}`;
+    }
+  }
+
+  async publish() {
+    this.agora.setAudio(audioTrack);
+    this.agora.publishMixedMedia();
   }
 
   async joinRoom() {
