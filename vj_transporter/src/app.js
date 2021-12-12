@@ -23,11 +23,11 @@ class App {
         alert('チャンネル名が入力されていません。');
         return;
       }
-      this.agora.setChannelName(channelName);
-      this.agora.joinChannel();
+      this.agora.joinChannel(channelName);
       this.dom.$status.classList.remove('status--failure')
       this.dom.$status.classList.add('status--success')
       this.dom.$status.innerText = '接続成功';
+      // 同じルームに対して、受け取った音声と外部の映像ソースを取ってきてmixして打ち上げ。
     } catch (e) {
       console.error(e);
       this.dom.$status.classList.add('status--failure')

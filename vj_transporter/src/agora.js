@@ -3,7 +3,6 @@ import { appConfig } from './config'
 
 export class Agora {
   constructor() {
-    this.channelName = ''
     this.appId = appConfig.APP_ID;
     this.appCertificate = appConfig.APP_CERTIFICATE;
     this.tokenApiUrl = `${appConfig.API_BASE_URL}/access_token`;
@@ -16,21 +15,19 @@ export class Agora {
     await this.client.subscribe(user, mediaType);
     if (mediaType === "audio") {
       const remoteAudioTrack = user.audioTrack;
-      remoteAudioTrack.play();
+      const mediaStreamTrack = remoteAudioTrack.getMediaStreamTrack();
+      console.log('audio track', mediaStreamTrack);
+      // remoteAudioTrack.play();
     }
-  }
-
-  setChannelName(channelName) {
-    this.channelName = channelName;
   }
 
   /**
    * チャンネルに讃歌
    */
-  async joinChannel() {
+  async joinChannel(channelName) {
     await this.client.setClientRole("host");
-    const token = await this.fetchToken(this.channelName);
-    const uid = await this.client.join(token, this.channelName, null);
+    const token = await this.fetchToken(channelName);
+    const uid = await this.client.join(token, channelName, null);
     return uid;
   }
 
