@@ -9,24 +9,38 @@ class App {
       $status: document.querySelector('#status'),
       $audioDevice: document.querySelector('#audio-device'),
       $channelUid: document.querySelector('#uid'),
+      $controllAudio: document.querySelector('#controll-audio'),
     };
+    this.audioTrack = null;
     this.agora = new Agora();
     this.onSubmit = this.onSubmit.bind(this);
-    this.dom.$createRoomBtn.addEventListener('click', this.onSubmit)
+    this.onClickAudioControl = this.onClickAudioControl.bind(this);
+    this.dom.$createRoomBtn.addEventListener('click', this.onSubmit);
+    this.dom.$controllAudio.addEventListener('click', this.onClickAudioControl);
   }
 
   async run() {
-    const displayMediaList = await navigator.mediaDevices.getDisplayMedia({
+    const stream = await navigator.mediaDevices.getDisplayMedia({
       audio: true,
       video: true,
     });
-    const audioTracks = displayMediaList.getAudioTracks();
+    console.log('stream', stream);
+    const audioTracks = stream.getAudioTracks();
     if (audioTracks.length <= 0) {
       alert('オーディオが検出できませんでした。');
       return;
     }
-    this.dom.$audioDevice.innerText = `接続デバイス：${audioTracks[0].label}`;
-    this.agora.setAudio(audioTracks[0]);
+    this.audioTrack = audioTracks[0]
+    this.dom.$audioDevice.innerText = `接続デバイス：${this.audioTrack.label}`;
+    this.agora.setAudio(this.audioTrack);
+    const audioCtx = new AudioContext();
+    // https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/createMediaStreamSource
+    const source = audioCtx.createMediaStreamSource(stream);
+    // https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioSourceNode
+    // source.connect(audioCtx.destination);
+  }
+  
+  onClickAudioControl() {
   }
 
   async onSubmit() {

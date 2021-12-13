@@ -4,13 +4,6 @@ const Dotenv = require('dotenv-webpack')
 const env = process.env.NODE_ENV
 
 module.exports = {
-  devServer: {
-    static: {
-      directory: path.join(__dirname, 'public'),
-    },
-    compress: true,
-    port: 8080,
-  },
   mode: env,
   target: ['web', 'es5'],
   entry: './src/app.js',

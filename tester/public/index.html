@@ -3,7 +3,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>VJ transporter</title>
+  <title>Tester</title>
   <style>
     .status--success {
       color: #268f0c;
@@ -23,17 +23,14 @@
         value=""
         placeholder="チャンネル名"
       />
-      <button id="join-room">ルームにjoin</button>
+      <button id="join-room">join room</button>
     </div>
     <div>
-      <button id="publish-stream">publish</button>
-    </div>
-    <div>
-      <p id="video-device"></p>
-      <p id="received-audio"></p>
       <div id="status"></div>
-      <video id="my-video" controls autoplay></video>
+      <span id="uid"></span>
     </div>
+    <div id="stream-container"></div>
+    <div id="canvas-container"></div>
   </main>
   <script src="./app.js"></script>
 </body>

@@ -9,29 +9,32 @@ class App {
       $videoDevice: document.querySelector('#video-device'),
       $publishButton: document.querySelector('#publish-stream'),
       $receivedAudioTrack: document.querySelector('#received-audio'),
-    }
-    this.agora = new Agora(this.handleUserPublished);
-    this.publish = this.publish.bind(this);
+      $myVideo: document.querySelector('#my-video'),
+    };
+    this.stream = undefined;
+    this.audioTrack = undefined;
+    this.agora = new Agora();
     this.handleUserPublished = this.handleUserPublished.bind(this);
+    this.publish = this.publish.bind(this);
     this.joinRoom = this.joinRoom.bind(this);
-    this.audioTrack = null;
     this.dom.$joinRoomBtn.addEventListener('click', this.joinRoom)
     this.dom.$publishButton.addEventListener('click', this.publish);
-    document.addEventListener('received-user-stream', this.handleUserPublished);
+    document.addEventListener('received-remote-stream', this.handleUserPublished);
   }
 
   async run() {
-    const displayMediaList = await navigator.mediaDevices.getDisplayMedia({
+    this.stream = await navigator.mediaDevices.getDisplayMedia({
       audio: false,
       video: true,
     });
-    const videoTracks = displayMediaList.getVideoTracks();
+    const videoTracks = this.stream.getVideoTracks();
     if (videoTracks.length <= 0) {
       alert('動画が検出できませんでした。');
       return;
     }
     this.dom.$videoDevice.innerText = `接続デバイス：${videoTracks[0].label}`;
     this.agora.setVideo(videoTracks[0]);
+    this.dom.$myVideo.srcObject = this.stream;
   }
 
   async handleUserPublished(e) {
@@ -42,12 +45,14 @@ class App {
       const remoteAudioTrack = e.detail.user.audioTrack;
       this.audioTrack = remoteAudioTrack.getMediaStreamTrack();
       this.dom.$receivedAudioTrack.innerText = `受け取った音声: ${this.audioTrack.label}`;
+      this.stream.addTrack(this.audioTrack);
+      this.agora.setVideo(this.stream.getVideoTracks()[0]);
     }
   }
 
   async publish() {
     this.agora.setAudio(this.audioTrack);
-    this.agora.publishMixedMedia();
+    this.agora.publish();
   }
 
   async joinRoom() {
@@ -61,7 +66,6 @@ class App {
       this.dom.$status.classList.remove('status--failure')
       this.dom.$status.classList.add('status--success')
       this.dom.$status.innerText = '接続成功';
-      // 同じルームに対して、受け取った音声と外部の映像ソースを取ってきてmixして打ち上げ。
     } catch (e) {
       console.error(e);
       this.dom.$status.classList.add('status--failure')

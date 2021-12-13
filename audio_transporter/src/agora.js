@@ -39,6 +39,7 @@ export class Agora {
         mediaStreamTrack: this.audioTrack,
       }),
     };
+    // TODO: mute
     localTracks.videoTrack = await AgoraRTC.createCameraVideoTrack();
     await this.client.setClientRole("host");
     const token = await this.fetchToken(this.channelName);

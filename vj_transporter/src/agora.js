@@ -2,27 +2,44 @@ import AgoraRTC from "agora-rtc-sdk-ng"
 import { appConfig } from './config'
 
 export class Agora {
-  constructor(handleUserPublished) {
+  constructor() {
     this.appId = appConfig.APP_ID;
     this.appCertificate = appConfig.APP_CERTIFICATE;
     this.tokenApiUrl = `${appConfig.API_BASE_URL}/access_token`;
     this.client = AgoraRTC.createClient({ mode: "live", codec: "vp8" });
     this.handleUserPublished = this.handleUserPublished.bind(this);
-    this.props = {
-      handleUserPublished,
-    }
     this.client.on("user-published", this.handleUserPublished);
   }
 
   async handleUserPublished(user, mediaType) {
+    console.log('[SSVJ]user-published')
     await this.client.subscribe(user, mediaType);
-    const event = new CustomEvent("received-user-stream", {
+    const event = new CustomEvent("received-remote-stream", {
       detail: {
         user,
         mediaType,
       },
     });
     document.dispatchEvent(event);
+  }
+  
+  async publish() {
+    if (!this.audioTrack) {
+      throw new Error('No audio track detected.')
+    }
+    const localTracks = {
+      videoTrack: AgoraRTC.createCustomVideoTrack({
+        mediaStreamTrack: this.videoTrack,
+      }),
+      audioTrack: AgoraRTC.createCustomAudioTrack({
+        mediaStreamTrack: this.audioTrack,
+      }),
+    };
+    await this.client.setClientRole("host");
+    const token = await this.fetchToken(this.channelName);
+    const uid = await this.client.join(token, this.channelName, null);
+    this.client.publish(Object.values(localTracks));
+    return uid;
   }
 
   /**
@@ -37,30 +54,19 @@ export class Agora {
    * 音声トラックを設定
    * @param {Object} audioTrack 
    */
-  setAudio(audioTrack) {
+   setAudio(audioTrack) {
     this.audioTrack = audioTrack;
   }
-  
+
   /**
    * チャンネルに讃歌
    */
   async joinChannel(channelName) {
+    this.channelName = channelName
     await this.client.setClientRole("host");
     const token = await this.fetchToken(channelName);
     const uid = await this.client.join(token, channelName, null);
     return uid;
-  }
-  
-  async publishMixedMedia() {
-    const localTracks = {
-      videoTrack: AgoraRTC.createCustomVideoTrack({
-        mediaStreamTrack: this.videoTrack,
-      }),
-      audioTrack: AgoraRTC.createCustomAudioTrack({
-        mediaStreamTrack: this.audioTrack,
-      }),
-    };
-    this.client.publish(Object.values(localTracks));
   }
 
   async fetchToken(channelName) {
@@ -70,8 +76,5 @@ export class Agora {
     });
     const rawData = await res.json();
     return rawData.token;
-  }
-
-  leave() {
   }
 }
