@@ -22,6 +22,7 @@ class App {
   async run() {
     const stream = await navigator.mediaDevices.getDisplayMedia({
       audio: true,
+      // NOTE: 音声だけあれば十分だが、仕様的にvideoのトラックの参照も必要。
       video: true,
     });
     console.log('stream', stream);
@@ -33,9 +34,9 @@ class App {
     this.audioTrack = audioTracks[0]
     this.dom.$audioDevice.innerText = `接続デバイス：${this.audioTrack.label}`;
     this.agora.setAudio(this.audioTrack);
-    const audioCtx = new AudioContext();
+    // const audioCtx = new AudioContext();
     // https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/createMediaStreamSource
-    const source = audioCtx.createMediaStreamSource(stream);
+    // const source = audioCtx.createMediaStreamSource(stream);
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioSourceNode
     // source.connect(audioCtx.destination);
   }

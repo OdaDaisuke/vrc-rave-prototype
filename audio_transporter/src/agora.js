@@ -34,13 +34,10 @@ export class Agora {
       throw new Error('No audio track detected.')
     }
     const localTracks = {
-      videoTrack: null,
       audioTrack: AgoraRTC.createCustomAudioTrack({
         mediaStreamTrack: this.audioTrack,
       }),
     };
-    // TODO: mute
-    localTracks.videoTrack = await AgoraRTC.createCameraVideoTrack();
     await this.client.setClientRole("host");
     const token = await this.fetchToken(this.channelName);
     const uid = await this.client.join(token, this.channelName, null);
