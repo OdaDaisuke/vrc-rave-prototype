@@ -1,11 +1,11 @@
 {
-  "name": "audio_transpoter",
+  "name": "@schutzstaffel-prototype/transporter",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
   "scripts": {
     "build": "webpack",
-    "serve": "NODE_ENV=development webpack serve"
+    "start": "NODE_ENV=development webpack serve"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.3",

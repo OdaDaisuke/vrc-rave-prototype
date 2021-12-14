@@ -1,8 +1,11 @@
 {
-  "name": "server",
+  "name": "@schutzstaffel-prototype/server",
   "version": "1.0.0",
   "main": "index.js",
   "license": "MIT",
+  "scripts": {
+    "start": "node app.js"
+  },
   "dependencies": {
     "agora-access-token": "^2.0.4",
     "dotenv": "^10.0.0",
