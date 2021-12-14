@@ -4,3 +4,10 @@
 .status--failure {
   color: #ff0000;
 }
+header {
+  padding-top: 30px;
+  padding-bottom: 30px;
+}
+video {
+  width: 100%;
+}

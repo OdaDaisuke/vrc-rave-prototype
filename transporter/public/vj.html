@@ -4,28 +4,40 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VJ transporter</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <main>
-    <div>
+  <header>
+    <div class="container">
+      <h1 class="ui header">VJ側ツール</h1>
+    </div>
+  </header>
+  <main class="container">
+    <div class="input-group mb-3">
       <input
         type="text"
+        class="form-control"
         id="channel-name"
         name="channel-name"
         value=""
         placeholder="チャンネル名"
+        aria-label="チャンネル名"
       />
-      <button id="join-room">ルームにjoin</button>
+      <div class="input-group-append">
+        <button class="btn btn-primary" id="join-room">ルームにjoin</button>
+      </div>
     </div>
-    <div>
-      <button id="publish-stream">publish</button>
+    <div class="mb-3">
+      <button id="publish-stream" class="btn btn-primary">publishする</button>
     </div>
-    <div>
-      <p id="video-device"></p>
-      <p id="received-audio"></p>
-      <div id="status"></div>
-      <video id="my-video" controls autoplay></video>
+    <div class="card">
+      <div class="card-body">
+        <p id="video-device"></p>
+        <p id="received-audio"></p>
+        <div id="status"></div>
+        <video id="my-video" controls autoplay></video>
+      </div>
     </div>
   </main>
   <script src="./vj_app.js"></script>

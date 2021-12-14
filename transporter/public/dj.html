@@ -4,24 +4,29 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>DJ Transporter</title>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
   <link rel="stylesheet" href="./style.css">
 </head>
 <body>
-  <main>
-    <div>
-      <input
-        type="text"
-        id="channel-name"
-        name="channel-name"
-        value=""
-        placeholder="チャンネル名"
-      />
-      <button id="create-room">ルームを作成</button>
+  <header>
+    <div class="container">
+      <h1 class="ui header">DJ側ツール</h1>
     </div>
-    <div>
-      <p id="audio-device"></p>
-      <div id="status"></div>
-      <span id="uid"></span>
+  </header>
+  <main class="container">
+    <div class="input-group mb-3">
+      <input type="text" class="form-control" id="channel-name" placeholder="チャンネル名" aria-label="チャンネル名">
+      <div class="input-group-append">
+        <button class="btn btn-primary" type="button" id="create-room">ルームを作成</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-body">
+        <h2>接続ステータス</h2>
+        <p id="audio-device"></p>
+        <div id="status"></div>
+        <span id="uid"></span>
+      </div>
     </div>
   </main>
   <script src="./dj_app.js"></script>
