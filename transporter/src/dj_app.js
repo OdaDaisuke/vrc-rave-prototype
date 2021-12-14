@@ -14,9 +14,7 @@ class App {
     this.audioTrack = null;
     this.agora = new Agora();
     this.onSubmit = this.onSubmit.bind(this);
-    this.onClickAudioControl = this.onClickAudioControl.bind(this);
     this.dom.$createRoomBtn.addEventListener('click', this.onSubmit);
-    this.dom.$controllAudio.addEventListener('click', this.onClickAudioControl);
   }
 
   async run() {
@@ -40,9 +38,6 @@ class App {
     // https://developer.mozilla.org/en-US/docs/Web/API/MediaStreamAudioSourceNode
     // source.connect(audioCtx.destination);
   }
-  
-  onClickAudioControl() {
-  }
 
   async onSubmit() {
     try {
@@ -52,7 +47,7 @@ class App {
         return;
       }
       this.agora.setChannelName(channelName);
-      const uid = await this.agora.sendAudio();
+      const uid = await this.agora.publishAudio();
       this.dom.$status.classList.remove('status--failure')
       this.dom.$status.classList.add('status--success')
       this.dom.$status.innerText = '接続成功';
@@ -65,6 +60,8 @@ class App {
     }
   }
 }
+
+export default App;
 
 window.addEventListener('load', () => {
   (new App()).run()

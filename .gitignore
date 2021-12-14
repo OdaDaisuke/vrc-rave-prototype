@@ -2,3 +2,4 @@
 ./vj_transporter/public/app.js
 node_modules
 .env
+*.LICENSE.txt

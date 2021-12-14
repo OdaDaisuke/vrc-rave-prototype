@@ -3,15 +3,8 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DJ Transporter</title>
-  <style>
-    .status--success {
-      color: #268f0c;
-    }
-    .status--failure {
-      color: #ff0000;
-    }
-  </style>
+  <title>VJ transporter</title>
+  <link rel="stylesheet" href="./style.css">
 </head>
 <body>
   <main>
@@ -23,17 +16,18 @@
         value=""
         placeholder="チャンネル名"
       />
-      <button id="create-room">ルームを作成</button>
+      <button id="join-room">ルームにjoin</button>
     </div>
     <div>
-      <p id="audio-device"></p>
-      <div id="status"></div>
-      <span id="uid"></span>
+      <button id="publish-stream">publish</button>
     </div>
-    <div id="media-controller">
-      <button id="controll-audio">再生</button>
+    <div>
+      <p id="video-device"></p>
+      <p id="received-audio"></p>
+      <div id="status"></div>
+      <video id="my-video" controls autoplay></video>
     </div>
   </main>
-  <script src="./app.js"></script>
+  <script src="./vj_app.js"></script>
 </body>
 </html>

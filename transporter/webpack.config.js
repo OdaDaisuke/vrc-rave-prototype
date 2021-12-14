@@ -9,14 +9,17 @@ module.exports = {
       directory: path.join(__dirname, 'public'),
     },
     compress: true,
-    port: 8082,
+    port: 8080,
   },
   mode: env,
   target: ['web', 'es5'],
-  entry: './src/app.js',
+  entry: {
+    'dj_app': './src/dj_app.js',
+    'vj_app': './src/vj_app.js',
+  },
   output: {
-      filename: 'app.js',
-      path: path.join(__dirname, 'public')
+    filename: '[name].js',
+    path: path.join(__dirname, 'public')
   },
   module: {
     rules: [

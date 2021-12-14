@@ -1,0 +1,6 @@
+.status--success {
+  color: #268f0c;
+}
+.status--failure {
+  color: #ff0000;
+}

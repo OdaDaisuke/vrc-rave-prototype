@@ -11,7 +11,15 @@ export class Agora {
     this.client.on("user-published", this.handleUserPublished);
   }
 
-  handleUserPublished() {
+  async handleUserPublished() {
+    await this.client.subscribe(user, mediaType);
+    const event = new CustomEvent("received-remote-stream", {
+      detail: {
+        user,
+        mediaType,
+      },
+    });
+    document.dispatchEvent(event);
   }
 
   setChannelName(channelName) {
@@ -27,9 +35,36 @@ export class Agora {
   }
 
   /**
+   * 映像トラックを設定
+   * @param {Object} videoTrack 
+   */
+  setVideo(videoTrack) {
+    this.videoTrack = videoTrack;
+  }
+
+  async publishMixedStream() {
+    if (!this.audioTrack) {
+      throw new Error('No audio track detected.')
+    }
+    const localTracks = {
+      videoTrack: AgoraRTC.createCustomVideoTrack({
+        mediaStreamTrack: this.videoTrack,
+      }),
+      audioTrack: AgoraRTC.createCustomAudioTrack({
+        mediaStreamTrack: this.audioTrack,
+      }),
+    };
+    await this.client.setClientRole("host");
+    const token = await this.fetchToken(this.channelName);
+    const uid = await this.client.join(token, this.channelName, null);
+    this.client.publish(Object.values(localTracks));
+    return uid;
+  }
+
+  /**
    * Remoteに音声送信
    */
-  async sendAudio() {
+  async publishAudio() {
     if (!this.audioTrack) {
       throw new Error('No audio track detected.')
     }
@@ -45,6 +80,17 @@ export class Agora {
     return uid;
   }
 
+  /**
+   * チャンネルに讃歌
+   */
+  async joinChannel(channelName) {
+    this.channelName = channelName
+    await this.client.setClientRole("host");
+    const token = await this.fetchToken(channelName);
+    const uid = await this.client.join(token, channelName, null);
+    return uid;
+  }
+
   async fetchToken(channelName) {
     const endpoint = `${this.tokenApiUrl}?channelName=${channelName}`
     const res = await fetch(endpoint, {
@@ -52,8 +98,5 @@ export class Agora {
     });
     const rawData = await res.json();
     return rawData.token;
-  }
-
-  leave() {
   }
 }
