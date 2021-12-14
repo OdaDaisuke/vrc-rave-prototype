@@ -11,33 +11,42 @@ class App {
       $receivedAudioTrack: document.querySelector('#received-audio'),
       $myVideo: document.querySelector('#my-video'),
     };
+
+    this.onReceiveRemoteStream = this.onReceiveRemoteStream.bind(this);
+    this.onClickPublish = this.onClickPublish.bind(this);
+    this.onClickJoinRoom = this.onClickJoinRoom.bind(this);
+
+    /** Promise<MediaStream> */
     this.stream = undefined;
     this.audioTrack = undefined;
+
     this.agora = new Agora();
-    this.handleUserPublished = this.handleUserPublished.bind(this);
-    this.publish = this.publish.bind(this);
-    this.joinRoom = this.joinRoom.bind(this);
-    this.dom.$joinRoomBtn.addEventListener('click', this.joinRoom)
-    this.dom.$publishButton.addEventListener('click', this.publish);
-    document.addEventListener('received-remote-stream', this.handleUserPublished);
+
+    this.dom.$joinRoomBtn.addEventListener('click', this.onClickJoinRoom)
+    this.dom.$publishButton.addEventListener('click', this.onClickPublish);
+    document.addEventListener('received-remote-stream', this.onReceiveRemoteStream);
   }
 
+  /**
+   * アプリの起動
+   * @returns null
+   */
   async run() {
-    this.stream = await navigator.mediaDevices.getDisplayMedia({
+    this.videoStream = await navigator.mediaDevices.getDisplayMedia({
       audio: false,
       video: true,
     });
-    const videoTracks = this.stream.getVideoTracks();
+    const videoTracks = this.videoStream.getVideoTracks();
     if (videoTracks.length <= 0) {
       alert('動画が検出できませんでした。');
       return;
     }
-    this.dom.$videoDevice.innerText = `接続デバイス：${videoTracks[0].label}`;
     this.agora.setVideo(videoTracks[0]);
-    this.dom.$myVideo.srcObject = this.stream;
+    this.dom.$videoDevice.innerText = `接続デバイス：${videoTracks[0].label}`;
+    this.dom.$myVideo.srcObject = this.videoStream;
   }
 
-  async handleUserPublished(e) {
+  async onReceiveRemoteStream(e) {
     if (!this.dom) {
       return;
     }
@@ -45,17 +54,17 @@ class App {
       const remoteAudioTrack = e.detail.user.audioTrack;
       this.audioTrack = remoteAudioTrack.getMediaStreamTrack();
       this.dom.$receivedAudioTrack.innerText = `受け取った音声: ${this.audioTrack.label}`;
-      this.stream.addTrack(this.audioTrack);
-      this.agora.setVideo(this.stream.getVideoTracks()[0]);
+      this.agora.setAudio(this.audioTrack);
+      // プレビュー確認用に、音声トラック追加
+      this.videoStream.addTrack(this.audioTrack);
     }
   }
 
-  async publish() {
-    this.agora.setAudio(this.audioTrack);
-    this.agora.publish();
+  async onClickPublish() {
+    this.agora.publishMixedStream();
   }
 
-  async joinRoom() {
+  async onClickJoinRoom() {
     try {
       const channelName = this.dom.$channelName.value;
       if (!channelName || channelName.length <= 0) {

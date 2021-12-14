@@ -2,19 +2,18 @@ import { Agora } from './agora'
 
 class App {
   constructor () {
-    console.log('run');
     this.dom = {
       $channelName: document.querySelector('#channel-name'),
       $createRoomBtn: document.querySelector('#create-room'),
       $status: document.querySelector('#status'),
       $audioDevice: document.querySelector('#audio-device'),
       $channelUid: document.querySelector('#uid'),
-      $controllAudio: document.querySelector('#controll-audio'),
     };
-    this.audioTrack = null;
+
     this.agora = new Agora();
-    this.onSubmit = this.onSubmit.bind(this);
-    this.dom.$createRoomBtn.addEventListener('click', this.onSubmit);
+
+    this.onClickCreateRoom = this.onClickCreateRoom.bind(this);
+    this.dom.$createRoomBtn.addEventListener('click', this.onClickCreateRoom);
   }
 
   async run() {
@@ -29,9 +28,8 @@ class App {
       alert('オーディオが検出できませんでした。');
       return;
     }
-    this.audioTrack = audioTracks[0]
-    this.dom.$audioDevice.innerText = `接続デバイス：${this.audioTrack.label}`;
-    this.agora.setAudio(this.audioTrack);
+    this.dom.$audioDevice.innerText = `接続デバイス：${audioTracks[0].label}`;
+    this.agora.setAudio(audioTracks[0]);
     // const audioCtx = new AudioContext();
     // https://developer.mozilla.org/en-US/docs/Web/API/AudioContext/createMediaStreamSource
     // const source = audioCtx.createMediaStreamSource(stream);
@@ -39,7 +37,7 @@ class App {
     // source.connect(audioCtx.destination);
   }
 
-  async onSubmit() {
+  async onClickCreateRoom() {
     try {
       const channelName = this.dom.$channelName.value;
       if (!channelName || channelName.length <= 0) {
@@ -47,7 +45,9 @@ class App {
         return;
       }
       this.agora.setChannelName(channelName);
+
       const uid = await this.agora.publishAudio();
+
       this.dom.$status.classList.remove('status--failure')
       this.dom.$status.classList.add('status--success')
       this.dom.$status.innerText = '接続成功';
