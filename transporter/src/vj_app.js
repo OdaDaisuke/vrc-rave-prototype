@@ -1,4 +1,4 @@
-import { Agora } from './agora'
+import { Agora, AGORA_MODE_RTC } from './agora';
 
 class App {
   constructor () {
@@ -20,9 +20,9 @@ class App {
     this.stream = undefined;
     this.audioTrack = undefined;
 
-    this.agora = new Agora();
+    this.agora = new Agora(AGORA_MODE_RTC);
 
-    this.dom.$joinRoomBtn.addEventListener('click', this.onClickJoinRoom)
+    this.dom.$joinRoomBtn.addEventListener('click', this.onClickJoinRoom);
     this.dom.$publishButton.addEventListener('click', this.onClickPublish);
     document.addEventListener('received-remote-stream', this.onReceiveRemoteStream);
   }
@@ -50,10 +50,10 @@ class App {
     if (!this.dom) {
       return;
     }
-    if (e.detail.mediaType === "audio") {
+    if (e.detail.mediaType === 'audio') {
       const remoteAudioTrack = e.detail.user.audioTrack;
       this.audioTrack = remoteAudioTrack.getMediaStreamTrack();
-      this.dom.$receivedAudioTrack.innerText = `受け取った音声: ${this.audioTrack.label}`;
+      this.dom.$receivedAudioTrack.innerText = `受け取った音声: ${remoteAudioTrack._uintId}`;
       this.agora.setAudio(this.audioTrack);
       // プレビュー確認用に、音声トラック追加
       this.videoStream.addTrack(this.audioTrack);
@@ -72,18 +72,18 @@ class App {
         return;
       }
       this.agora.joinChannel(channelName);
-      this.dom.$status.classList.remove('status--failure')
-      this.dom.$status.classList.add('status--success')
+      this.dom.$status.classList.remove('status--failure');
+      this.dom.$status.classList.add('status--success');
       this.dom.$status.innerText = '接続成功';
     } catch (e) {
       console.error(e);
-      this.dom.$status.classList.add('status--failure')
-      this.dom.$status.classList.remove('status--success')
+      this.dom.$status.classList.add('status--failure');
+      this.dom.$status.classList.remove('status--success');
       this.dom.$status.innerText = JSON.stringify(e);
     }
   }
 }
 
 window.addEventListener('load', () => {
-  (new App()).run()
+  (new App()).run();
 });
