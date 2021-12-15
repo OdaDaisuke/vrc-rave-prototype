@@ -17,19 +17,21 @@ class App {
   }
 
   async run() {
-    const stream = await navigator.mediaDevices.getDisplayMedia({
+    const audioStream = await navigator.mediaDevices.getDisplayMedia({
       audio: true,
       // NOTE: 音声だけあれば十分だが、仕様的にvideoのトラックの参照も必要。
       video: true,
     });
-    console.log('stream', stream);
-    const audioTracks = stream.getAudioTracks();
+    const audioTracks = audioStream.getAudioTracks();
     if (audioTracks.length <= 0) {
       alert('オーディオが検出できませんでした。');
       return;
     }
     this.dom.$audioDevice.innerText = `接続デバイス：${audioTracks[0].label}`;
     this.agora.setAudio(audioTracks[0]);
+    // const audioCtx = new AudioContext();
+    // const source = audioCtx.createMediaStreamSource(audioStream);
+    // source.connect(audioCtx.destination);
   }
 
   async onClickCreateRoom() {
