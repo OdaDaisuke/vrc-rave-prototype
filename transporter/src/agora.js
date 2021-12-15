@@ -68,12 +68,10 @@ export class Agora {
     if (!this.audioTrack) {
       throw new Error('No audio track detected.')
     }
-    const localTracks = {
-      audioTrack: AgoraRTC.createCustomAudioTrack({
-        mediaStreamTrack: this.audioTrack,
-      }),
-    };
-    this.client.publish(Object.values(localTracks));
+    const agoraAudioTrack = AgoraRTC.createCustomAudioTrack({
+      mediaStreamTrack: this.audioTrack,
+    });
+    this.client.publish([agoraAudioTrack]);
   }
 
   /**
