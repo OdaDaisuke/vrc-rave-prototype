@@ -8,7 +8,7 @@ const modeList = [AGORA_MODE_LIVE, AGORA_MODE_RTC];
 
 export class Agora {
   constructor(mode) {
-    if (!modeList.includes('live', 'rtc')) {
+    if (!modeList.includes(mode)) {
       mode = AGORA_MODE_LIVE;
     }
     this.appId = appConfig.APP_ID;
