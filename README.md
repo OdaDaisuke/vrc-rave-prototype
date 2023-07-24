@@ -1,4 +1,4 @@
-# schutzstaffel-prototype
+# vrc-rave-prototype
 Prototype for VRChat streaming system.
 
 ## /server
